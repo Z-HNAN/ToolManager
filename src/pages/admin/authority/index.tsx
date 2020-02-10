@@ -4,7 +4,7 @@
 
 import React from 'react'
 
-import { WhiteSpace } from '@/components'
+import { WhiteSpace, AdvancedSearch } from '@/components'
 
 interface AuthorityProps {
 
@@ -12,9 +12,20 @@ interface AuthorityProps {
 
 const Authority: React.FC<AuthorityProps> = () => {
 
+  const handleSearch = (values: any) => {
+    console.log(values)
+  }
+
   return (
     <div>
-      <h1>admin-Authority</h1>
+      <AdvancedSearch
+        search={[
+          ['姓名', 'name', 'text'],
+          ['体重', 'weight', 'number'],
+          ['身高', 'height', 'number'],
+        ]}
+        onSearch={handleSearch}
+      />
       <WhiteSpace />
     </div>
   )
