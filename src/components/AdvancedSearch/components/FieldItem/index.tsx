@@ -23,6 +23,11 @@ const FieldItem: React.FC<FieldItemProps> = props => {
     getFieldDecorator,
   } = props
 
+  // TODO 判断 TextArea 需要判断长度来使用，暂时放一下
+  // const InputDOM = type === 'textArea'
+  //   ? (<Input.TextArea />)
+  //   : (<Input type={type} />)
+
   return (
     <Col span={8}>
       <Form.Item label={label} style={{ display: 'flex' }}>
