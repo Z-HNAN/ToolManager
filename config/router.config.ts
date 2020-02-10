@@ -106,7 +106,7 @@ const routes: IRoute[] = [
           // 工作部门
           { path: '/admin/department', component: './admin/department', title: '工作部门' },
           // 权限管理
-          { path: '/admin/authority', component: './admin/authority', title: '权限部门' },
+          { path: '/admin/authority', component: './admin/authority', title: '权限管理' },
           // 人员管理
           { path: '/admin/user', component: './admin/user', title: '人员管理' },
           { path: '*', redirect: '/admin/department' }, // 未匹配到重定向去工作部门
