@@ -3,25 +3,25 @@
  */
 
 import React from 'react'
+import styles from './index.less'
 
 interface WhiteSpaceProps {
   height?: number
 }
 
+
 const WhiteSpace: React.FC<WhiteSpaceProps> = props => {
   const {
-    height = 30,
+    height = 24,
   } = props
 
-  // 总体BasicLayout有24px的padding
-  const styles = {
-    height,
-    width: 'calc(100% + 48px)',
-    marginLeft: '-24px',
-    backgroundColor: '#f0f2f5',
-  }
-
-  return (<div style={styles} />)
+  return (
+    <div>
+      <div className={styles.side} />
+      <div className={styles.whiteSpace} style={{ height }}/>
+      <div className={styles.side} />
+    </div>
+  )
 }
 
 export default WhiteSpace
