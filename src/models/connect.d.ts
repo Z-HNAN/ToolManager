@@ -1,9 +1,11 @@
 import { IUsersModelState } from './users'
+import { IAdminModelState } from './admin'
 import { GlobalModelStateType } from './global'
 
 export {
   IUsersModelState,
   GlobalModelStateType,
+  IAdminModelState,
 }
 
 export interface LoadingType {
@@ -21,6 +23,7 @@ export interface IConnectState {
   loading: LoadingType
   users: IUsersModelState
   global: GlobalModelStateType
+  admin: IAdminModelState
 }
 
 // export interface Route  {
