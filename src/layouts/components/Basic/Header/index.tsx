@@ -22,9 +22,12 @@ interface PropsType {
 
 // 用户头像类型
 const UserTypeList: [string, string][] = [
-  ['tourist', '#ffbf00'], // 游客权限
-  ['admin', '#f56a00'], // admin权限
-  ['user', '#7265e6'], // user权限
+  ['OⅠ', '#ff7a45'], // 产线员工-worker
+  ['OⅡ', '#ffa940'], // 仓库管理员-storekeeper
+  ['Repairer', '#ffc53d'], // 检修员-repairer
+  ['Manager', '#bae637'], // WorkCell管理-manager
+  ['Supervisor', '#73d13d'], // 监管员-supervisor
+  ['Admin', '#9254de'], // 管理员-admin
 ]
 
 const mapStateToProps = (state: IConnectState) => {
@@ -70,7 +73,7 @@ const HeaderComponent: React.FC<PropsType> = props => {
   return (
     <Header className={styles.header}>
       <div className={styles.logo} />
-      Header
+      <span className={styles.title}>工夹具全寿命智能管理系统</span>
       <div className={styles.user}>
         <Avatar className={styles.userAvatar} style={{ backgroundColor: userAvatarColor, verticalAlign: 'middle' }} size="large">
           {userName}

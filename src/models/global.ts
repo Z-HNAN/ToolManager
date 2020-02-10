@@ -4,16 +4,27 @@ import { router } from 'umi'
 import { OperationResultType } from '@/utils/request'
 import * as globalService from '@/services/global'
 
+// 权限枚举类型
+export type AuthorityType = 'admin' // Admin-管理员
+  | 'worker' // OⅠ-产线员工
+  | 'storekeeper' // OⅡ-仓库管理员
+  | 'repairer' // Repairer-检修员
+  | 'manager' // Manager-WorkCell管理
+  | 'supervisor' // Supervisor-监管员
+  | 'user' // demo演示权限
+
 // 登录权限与页面对应表
 const authMapRoute: {
-  admin: string
-  user: string
+  [key in AuthorityType]: string
 } = {
   admin: '/admin',
+  worker: '/worker',
+  storekeeper: '/storekeeper',
+  repairer: '/repairer',
+  manager: '/manager',
+  supervisor: '/supervisor',
   user: '/user',
 }
-
-export type AuthorityType = 'admin' | 'user'
 
 export interface CurrentUserType {
   id: string
@@ -48,7 +59,7 @@ const INIT_STATE: GlobalModelStateType = {
   currentUser: {
     id: '123456',
     username: '赵大锤',
-    authority: ['user'],
+    authority: ['worker', 'storekeeper', 'supervisor', 'repairer', 'manager', 'admin'],
   },
 }
 

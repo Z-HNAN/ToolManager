@@ -1,7 +1,7 @@
 {
-  "name": "react-ts-seed",
+  "name": "tms-fe",
   "version": "0.1.0",
-  "description": "react typescript seed project",
+  "description": "tms project fe",
   "scripts": {
     "start": "cross-env UMI_ENV=dev umi dev",
     "build": "cross-env UMI_ENV=prod umi build",
@@ -13,6 +13,7 @@
   "dependencies": {
     "antd": "^3.26.7",
     "dva": "^2.6.0-beta.6",
+    "lodash": "^4.17.15",
     "nprogress": "^0.2.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",

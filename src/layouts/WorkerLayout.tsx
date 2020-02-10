@@ -1,5 +1,5 @@
 /**
- * 普通布局
+ * work布局，没有侧边栏
  */
 
 import zhCN from 'antd/es/locale/zh_CN'
@@ -10,17 +10,15 @@ import { Header as HeaderComponent } from './components/Basic'
 
 import styles from './BasicLayout.less'
 
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 
 interface PropsType {
-  menu: ReactElement | null
-  content: ReactElement
+  children: ReactElement
 }
 
 const BasicLayout: React.FC<PropsType> = props => {
   const {
-    menu: MenuComponent,
-    content,
+    children,
   } = props
 
   return (
@@ -30,12 +28,9 @@ const BasicLayout: React.FC<PropsType> = props => {
           <HeaderComponent />
         </Layout>
         <Layout>
-          <Sider width={200}>
-            {MenuComponent}
-          </Sider>
           <Layout className={styles.body}>
             <Content className={styles.content}>
-              {content}
+              {children}
             </Content>
           </Layout>
         </Layout>
