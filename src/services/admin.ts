@@ -7,6 +7,20 @@ export async function fetchAuthorities() {
   return request('authorities');
 }
 
+/**
+ * 拉取workcell信息
+ */
+export async function fetchWorkcells() {
+  return request('workcell');
+}
+
+/**
+ * 拉取manager信息
+ */
+export async function fetchManagers() {
+  return request('manager');
+}
+
 export async function updateAuthority(
   { id, remark }: { id: string, remark: string }
 ): Promise<OperationResultType> {
@@ -17,6 +31,20 @@ export async function updateAuthority(
     },
   })
 }
+
+export async function updateWorkCell(
+  { id, name, managerId }: { id: string | null, name: string, managerId: string | null }
+): Promise<OperationResultType> {
+  return request('workcell', {
+    method: 'POST',
+    data: {
+      id,
+      name,
+      managerId,
+    },
+  })
+}
+
 
 // export async function create(values: IUser) {
 //   const { email, name, website } = values
