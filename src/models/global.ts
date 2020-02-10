@@ -59,7 +59,7 @@ const INIT_STATE: GlobalModelStateType = {
   currentUser: {
     id: '123456',
     username: '赵大锤',
-    authority: ['worker', 'storekeeper', 'supervisor', 'repairer', 'manager', 'admin'],
+    authority: ['admin', 'worker', 'storekeeper', 'supervisor', 'repairer', 'manager'],
   },
 }
 

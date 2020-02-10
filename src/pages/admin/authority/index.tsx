@@ -4,11 +4,18 @@
 
 import React from 'react'
 
-const Authority: React.FC<{}> = () => {
+import { WhiteSpace } from '@/components'
+
+interface AuthorityProps {
+
+}
+
+const Authority: React.FC<AuthorityProps> = () => {
 
   return (
     <div>
       <h1>admin-Authority</h1>
+      <WhiteSpace />
     </div>
   )
 }
