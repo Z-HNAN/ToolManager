@@ -21,12 +21,62 @@ export async function fetchManagers() {
   return request('manager');
 }
 
+/**
+ *  拉取用户信息
+ */
+export async function fetchUser(
+  { startIndex, pageSize, workcellId, workerId, workerName, authorityId }
+  /* eslint-disable-next-line max-len */
+    : { startIndex: number, pageSize: number, workcellId: string, workerId: string | null, workerName: string | null, authorityId: string | null },
+) {
+  const response = await request('user', {
+    method: 'GET',
+    params: {
+      workcellId,
+      workerId,
+      workerName,
+      authorityId,
+      startIndex,
+      pageSize,
+    },
+  })
+  const { total, list } = response
+
+  return {
+    total,
+    list: list.map((user: any) => ({
+      id: user.id,
+      workcellId: user.workcellId,
+      username: user.username,
+      authName: user.authName,
+      phone: user.phone,
+      workerId: user.workerId,
+      authorityId: user.authorityId,
+    })),
+  }
+}
+
+/**
+ * 删除workcell信息
+ */
+export async function removeWorkCell(
+  { id }: { id: string },
+): Promise<OperationResultType> {
+  return request('workcell', {
+    method: 'DELETE',
+    data: {
+      id,
+    },
+  })
+}
+
 export async function updateAuthority(
   { id, remark }: { id: string, remark: string }
 ): Promise<OperationResultType> {
-  return request(`authority/${id}`, {
+  return request('authority', {
     method: 'POST',
     data: {
+      id,
       remark,
     },
   })

@@ -67,8 +67,8 @@ const Department: React.FC<DepartmentProps> = props => {
     dispatch({ type: 'admin/clearEditWorkCell' })
   }
 
-  const handleRemoveWorkCell = () => {
-    // 暂时不删除
+  const handleRemoveWorkCell = (id: string) => {
+    dispatch({ type: 'admin/removeWorkCell', payload: id })
   }
 
   const handleConfirmWorkCell = (edit: EditWorkcellType) => {
@@ -77,7 +77,7 @@ const Department: React.FC<DepartmentProps> = props => {
 
   return (
     <div>
-      <Button onClick={handleCreateWorkCell}>新增部门</Button>
+      <Button type="primary" icon="plus" onClick={handleCreateWorkCell}>新增部门</Button>
       <WorkCellTable
         workcells={workcells}
         loading={fetchWorkcellsLoading}

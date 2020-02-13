@@ -20,6 +20,12 @@ export const hidenModalSelector = createSelector(
   (editWorkCell): boolean => isNil(editWorkCell),
 )
 
+const emptyManager = {
+  id: '-1',
+  name: '-',
+  phone: '-',
+}
+
 /**
  * 返回user展示的信息
  */
@@ -35,17 +41,11 @@ export const workcellSelector = createSelector(
       managerId,
     } = workcell
 
-    let showManager
-    if (isNil(managerId)) {
-      // 为空，填充-
-      showManager = {
-        id: '-1',
-        name: '-',
-        phone: '-',
-      }
-    } else {
-      // 不为空，寻找信息填充
-      showManager = (managers.find(manager => manager.id === managerId)) as ManagerType
+    // 默认为空
+    let showManager = emptyManager
+    // 不为空，寻找信息填充
+    if (isNil(managerId) === false) {
+      showManager = managers.find(manager => manager.id === managerId) || emptyManager
     }
 
     return {

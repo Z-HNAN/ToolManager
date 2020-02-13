@@ -10,6 +10,7 @@ const routes: IRoute[] = [
   // 认证页面
   {
     path: '/',
+    component: '../layouts/RootLayout',
     Routes: ['./src/routes/LoginRouter'],
     routes: [
       // 默认去登录页面

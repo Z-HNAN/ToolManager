@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Divider } from 'antd'
+import { Table, Divider, Popconfirm } from 'antd'
 import { WorkcellSelectType } from '../selector'
 
 interface WorkCellTableProps {
@@ -49,7 +49,12 @@ const WorkCellTable: React.FC<WorkCellTableProps> = props => {
         <span>
           <a onClick={() => onEdit(record.id) }>修改</a>
           <Divider type="vertical" />
-          <a onClick={() => onRemove(record.id) }>删除</a>
+          <Popconfirm
+            title={`确定删除${record.name}`}
+            onConfirm={() => { onRemove(record.id) }}
+          >
+            <a>删除</a>
+          </Popconfirm>
         </span>
       ),
     },

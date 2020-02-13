@@ -1,6 +1,7 @@
 import { Reducer } from 'redux'
 import { Effect } from 'dva'
 import { router } from 'umi'
+import { isNil } from 'lodash'
 import { OperationResultType } from '@/utils/request'
 import * as globalService from '@/services/global'
 
@@ -26,14 +27,34 @@ const authMapRoute: {
   user: '/user',
 }
 
+// 高级搜索通用项
+export type BasicAdvancedSerch<T> = {
+  page: number // 当前页数
+  size: number // 每页条数
+  content: T | null // 具体搜索内容
+}
+
+// 通用分页项
+export type BasicPagation = {
+  page: number
+  size: number
+}
+
 export interface CurrentUserType {
   id: string
   username: string
   authority: AuthorityType[]
 }
 
+// 全局提示
+export interface DialogType {
+  type: 'info' | 'success' | 'error' | 'warning',
+  msg: string,
+}
+
 export interface GlobalModelStateType {
   currentUser: null | CurrentUserType
+  dialog: null | DialogType
 }
 
 export interface GlobalModelType {
@@ -50,6 +71,8 @@ export interface GlobalModelType {
     changeCurrentUser: Reducer<any>
     // 清除当前登录用户的状态
     clearCurrentUser: Reducer<any>
+    // 改变dialog内容
+    changeDialog: Reducer<any>
   }
   subscriptions: {}
 }
@@ -61,6 +84,7 @@ const INIT_STATE: GlobalModelStateType = {
     username: '赵大锤',
     authority: ['admin', 'worker', 'storekeeper', 'supervisor', 'repairer', 'manager'],
   },
+  dialog: null,
 }
 
 const GlobalModel: GlobalModelType = {
@@ -111,6 +135,11 @@ const GlobalModel: GlobalModelType = {
         ...state,
         currentUser: null,
       }
+    },
+    changeDialog(state: GlobalModelStateType, action) {
+      const dialog = action.payload
+      // dialog可能为null,或者具体信息
+      return { ...state, dialog }
     },
   },
   subscriptions: {},
