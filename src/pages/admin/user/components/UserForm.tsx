@@ -4,10 +4,17 @@ import { Form, Input, Select } from 'antd'
 import { connect } from 'dva'
 import { EditUserType } from '../index'
 import { IConnectState } from '@/models/connect'
-
+import {
+  workcellFormSelectType,
+  workcellFormSelector,
+  authorityFormSelectType,
+  authorityFormSelector,
+} from '../selector'
 
 interface WorkCellFormProps {
   form: FormComponentProps['form']
+  workcells: workcellFormSelectType[],
+  authorities: authorityFormSelectType[],
   edit: EditUserType
 }
 
@@ -23,12 +30,18 @@ const formItemLayout = {
 
 const mapStateToProps = (state: IConnectState) => {
   const { editUser } = state.admin
-  return { edit: (editUser as EditUserType) }
+  return {
+    workcells: workcellFormSelector(state),
+    authorities: authorityFormSelector(state),
+    edit: (editUser as EditUserType),
+  }
 }
 
 const WorkCellForm: React.FC<WorkCellFormProps> = props => {
   const {
     form,
+    workcells,
+    authorities,
     edit,
   } = props
   const { getFieldDecorator } = form
@@ -53,7 +66,9 @@ const WorkCellForm: React.FC<WorkCellFormProps> = props => {
         })(
           <Select>
             <Select.Option value="-1">--暂不选择--</Select.Option>
-            <Select.Option value="1">下沙一公司</Select.Option>
+            {workcells.map(({ id, name }) => (
+              <Select.Option key={id} value={id}>{name}</Select.Option>
+            ))}
           </Select>,
         )}
       </Form.Item>
@@ -98,8 +113,9 @@ const WorkCellForm: React.FC<WorkCellFormProps> = props => {
           rules: [{ required: true, message: '请选择所属权限' }],
         })(
           <Select>
-            <Select.Option value="1">赵大锤</Select.Option>
-            <Select.Option value="2">赵大锤</Select.Option>
+            {authorities.map(({ id, name }) => (
+              <Select.Option key={id} value={id}>{name}</Select.Option>
+            ))}
           </Select>,
         )}
       </Form.Item>

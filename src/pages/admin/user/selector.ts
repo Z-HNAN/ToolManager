@@ -13,6 +13,21 @@ export type userSelectType = {
   authority: string // 权限
 }
 
+/**
+ * 编辑用户表单，工作部门联动类型
+ */
+export type workcellFormSelectType = {
+  id: string,
+  name: string,
+}
+/**
+ * 编辑用户表单，权限联动类型
+ */
+export type authorityFormSelectType = {
+  id: string,
+  name: string,
+}
+
 export interface userResultListSelectType {
   total: number // 总条数
   list: userSelectType[]
@@ -79,3 +94,30 @@ export const pagationStatusSelector = createSelector(
     return { page, size }
   },
 )
+
+/**
+ * 新增员工表单-部门数据
+ */
+export const workcellFormSelector = createSelector(
+  [
+    (state: IConnectState) => state.admin.workcells,
+  ],
+  workcells => workcells.map(workcell => ({
+    id: workcell.id,
+    name: workcell.name,
+  })),
+)
+
+/**
+ * 新增员工表单-权限数据
+ */
+export const authorityFormSelector = createSelector(
+  [
+    (state: IConnectState) => state.admin.authorities,
+  ],
+  authorities => authorities.map(authority => ({
+    id: authority.id,
+    name: authority.name,
+  })),
+)
+

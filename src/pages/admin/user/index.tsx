@@ -19,6 +19,10 @@ import {
   userResultListSelectType,
   userResultListSelector,
   pagationStatusSelector,
+  workcellFormSelectType,
+  workcellFormSelector,
+  authorityFormSelectType,
+  authorityFormSelector,
 } from './selector'
 
 import styles from './index.less'
@@ -42,7 +46,7 @@ export const EMPTY_EDIT_USER: EditUserType = {
   username: '',
   password: '',
   phone: '',
-  authorityId: '1',
+  authorityId: '',
 }
 
 
@@ -53,6 +57,8 @@ interface UserProps {
   userResultList: userResultListSelectType
   searchLoading: boolean
   pagationStatus: BasicPagation
+  workcells: workcellFormSelectType[]
+  authorities: authorityFormSelectType[]
 }
 
 const mapStateToProps = (state: IConnectState) => {
@@ -61,6 +67,8 @@ const mapStateToProps = (state: IConnectState) => {
     showEditUserModal: showEditUserModalSelector(state),
     userResultList: userResultListSelector(state),
     pagationStatus: pagationStatusSelector(state),
+    workcells: workcellFormSelector(state),
+    authorities: authorityFormSelector(state),
     searchLoading: (state.loading.effects['admin/searchUserResult']) as boolean,
   }
 }
@@ -73,6 +81,8 @@ const User: React.FC<UserProps> = props => {
     userResultList,
     pagationStatus,
     searchLoading,
+    workcells,
+    authorities,
   } = props
 
   // 新增员工
@@ -137,16 +147,15 @@ const User: React.FC<UserProps> = props => {
     )
   }
 
-
   return (
     <div>
       <Button className={styles.createButton} type="primary" icon="plus" onClick={handleCreateUser}>新增员工</Button>
       <AdvancedSearch
         search={[
-          ['WorkCell', 'workcellId', 'select', [['下沙一区', '1'], ['下沙二区', '2']], 'require'],
+          ['WorkCell', 'workcellId', 'select', workcells.map(({ id, name }) => [name, id]), 'require'],
           ['工号', 'workerId', 'text'],
           ['姓名', 'workerName', 'text'],
-          ['权限', 'authorityId', 'select', [['--全部--', '-1'], ['Admin', '1']]],
+          ['权限', 'authorityId', 'select', [['--全部--', '-1'], ...authorities.map(({ id, name }) => [name, id])]],
         ]}
         onClear={handleClear}
         onSearch={handleSearch}

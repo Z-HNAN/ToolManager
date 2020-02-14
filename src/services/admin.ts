@@ -37,7 +37,8 @@ export async function fetchUser(
       workcellId,
       workerId,
       workerName,
-      authorityId,
+      // -1转换为搜索全部
+      authorityId: authorityId === '-1' ? null : authorityId,
       startIndex,
       pageSize,
     },
