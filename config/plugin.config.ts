@@ -7,7 +7,10 @@ const plugins: IPlugin[] = [
     {
       antd: false,
       dva: true,
-      dynamicImport: false,
+      dynamicImport: {
+        webpackChunkName: true,
+        loadingComponent: './components/Loading',
+      },
       title: 'antd-mobile-ts-seed',
       dll: false,
       routes: {
