@@ -1,13 +1,17 @@
 import { createSelector } from 'reselect'
 import { IConnectState } from '@/models/connect.d'
 import { isNil } from 'lodash'
-import { ManagerType } from '@/models/admin'
 
 export type WorkcellSelectType = {
   id: string
   name: string
   managerName: string
   managerPhone: string
+}
+
+export type ManagerFormSelectType = {
+  id: string
+  name: string
 }
 
 /**
@@ -17,7 +21,7 @@ export const hidenModalSelector = createSelector(
   [
     (state: IConnectState) => state.admin.editWorkCell,
   ],
-  (editWorkCell): boolean => isNil(editWorkCell),
+  (editWorkCell): boolean => isNil(editWorkCell) === true,
 )
 
 const emptyManager = {
@@ -55,4 +59,23 @@ export const workcellSelector = createSelector(
       managerPhone: showManager.phone,
     }
   }),
+)
+
+/**
+ * form中使用的manager信息
+ * 根据editWorcell而变化，保证其manager都为该workcell中的员工
+ */
+export const managerFormSelector = createSelector(
+  [
+    (state: IConnectState) => state.admin.managers,
+    (state: IConnectState) => state.admin.editWorkCell,
+  ],
+  (managers, editWorkCell): ManagerFormSelectType[] => {
+    if (isNil(editWorkCell)) { return [] }
+
+    return managers.filter(manager => manager.workcellId === editWorkCell.id).map(manager => ({
+      id: manager.id,
+      name: manager.name,
+    }))
+  },
 )

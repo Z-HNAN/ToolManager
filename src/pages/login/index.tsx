@@ -45,9 +45,9 @@ const Login: React.FC<LoginProps> = props => {
         <div className={styles.top}>
           <div className={styles.header}>
             {/* <img alt="logo" className={styles.logo} /> */}
-            <span className={styles.title}>登录</span>
+            <span className={styles.title}>捷普·TMS</span>
           </div>
-          <div className={styles.desc}>随便填写账号密码，默认user权限</div>
+          <div className={styles.desc}>随便填写账号密码</div>
         </div>
         <FormComponent
           onSubmit={handleSubmit}

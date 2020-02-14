@@ -5,10 +5,12 @@ import { connect } from 'dva'
 import { EditWorkcellType } from '../index'
 import { ManagerType } from '@/models/admin'
 import { IConnectState } from '@/models/connect'
+import { ManagerFormSelectType, managerFormSelector } from '../selector'
 
 
 interface WorkCellFormProps {
   form: FormComponentProps['form']
+  managers: ManagerFormSelectType[]
   edit: EditWorkcellType
 }
 
@@ -24,12 +26,16 @@ const formItemLayout = {
 
 const mapStateToProps = (state: IConnectState) => {
   const { editWorkCell } = state.admin
-  return { edit: editWorkCell }
+  return {
+    managers: managerFormSelector(state),
+    edit: editWorkCell,
+  }
 }
 
 const WorkCellForm: React.FC<WorkCellFormProps> = props => {
   const {
     form,
+    managers,
     edit,
   } = props
   const { getFieldDecorator } = form
@@ -55,7 +61,9 @@ const WorkCellForm: React.FC<WorkCellFormProps> = props => {
         })(
           <Select>
             <Select.Option value="-1">--暂不选择--</Select.Option>
-            <Select.Option value="1">赵大锤</Select.Option>
+            {managers.map(({ id, name }) => (
+              <Select.Option key={id} value={id}>{name}</Select.Option>
+            ))}
           </Select>,
         )}
       </Form.Item>

@@ -20,6 +20,7 @@ export type ManagerType = {
   id: string
   name: string
   phone: string
+  workcellId: string
 }
 
 // workcell类型
