@@ -15,6 +15,8 @@ import {
   WorkcellSelectType,
 } from './selector'
 
+import styles from './index.less'
+
 export type EditWorkcellType = {
   id: string | null
   name: string
@@ -76,7 +78,7 @@ const Department: React.FC<DepartmentProps> = props => {
 
   return (
     <div>
-      <Button type="primary" icon="plus" onClick={handleCreateWorkCell}>新增部门</Button>
+      <Button className={styles.createButton} type="primary" icon="plus" onClick={handleCreateWorkCell}>新增部门</Button>
       <WorkCellTable
         workcells={workcells}
         loading={fetchWorkcellsLoading}

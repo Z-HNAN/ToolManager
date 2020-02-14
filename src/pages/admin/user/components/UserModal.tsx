@@ -1,7 +1,7 @@
 import React from 'react'
 import { FormComponentProps } from 'antd/es/form'
 import { Modal, Form } from 'antd'
-import UserForm from './userForm'
+import UserForm from './UserForm'
 import { EditUserType } from '../index'
 
 interface UserModalProps {
