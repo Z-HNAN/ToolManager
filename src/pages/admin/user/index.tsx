@@ -11,9 +11,11 @@ import { UserSearch } from '@/models/admin'
 import { IConnectState } from '@/models/connect'
 import { BasicPagation } from '@/models/global'
 import { undefinedToNull } from '@/utils'
-import UserTable from './components/userTable'
+import UserTable from './components/UserTable'
+import UserModal from './components/UserModal'
 import {
   hiddenSearchResultSelector,
+  showEditUserModalSelector,
   userResultListSelectType,
   userResultListSelector,
   pagationStatusSelector,
@@ -21,9 +23,33 @@ import {
 
 import styles from './index.less'
 
+export type EditUserType = {
+  id: string | null
+  workcellId: string
+  workerId: string
+  authName: string
+  username: string
+  password: string
+  phone: string
+  authorityId: string
+}
+
+export const EMPTY_EDIT_USER: EditUserType = {
+  id: null,
+  workcellId: '-1',
+  workerId: '',
+  authName: '',
+  username: '',
+  password: '',
+  phone: '',
+  authorityId: '1',
+}
+
+
 interface UserProps {
   dispatch: Dispatch<AnyAction>
   hiddenSearchResult: boolean
+  showEditUserModal: boolean
   userResultList: userResultListSelectType
   searchLoading: boolean
   pagationStatus: BasicPagation
@@ -32,6 +58,7 @@ interface UserProps {
 const mapStateToProps = (state: IConnectState) => {
   return {
     hiddenSearchResult: hiddenSearchResultSelector(state),
+    showEditUserModal: showEditUserModalSelector(state),
     userResultList: userResultListSelector(state),
     pagationStatus: pagationStatusSelector(state),
     searchLoading: (state.loading.effects['admin/searchUserResult']) as boolean,
@@ -42,6 +69,7 @@ const User: React.FC<UserProps> = props => {
   const {
     dispatch,
     hiddenSearchResult,
+    showEditUserModal,
     userResultList,
     pagationStatus,
     searchLoading,
@@ -49,15 +77,23 @@ const User: React.FC<UserProps> = props => {
 
   // 新增员工
   const handleCreateUser = () => {
-    console.log('create')
+    dispatch({ type: 'admin/changeEditUser', payload: null })
   }
   // 编辑员工
   const handleEditUser = (id: string) => {
-    console.log(id)
+    dispatch({ type: 'admin/changeEditUser', payload: id })
+  }
+  // 取消编辑
+  const handleCancelEdit = () => {
+    dispatch({ type: 'admin/clearEditUser' })
+  }
+  // 完成编辑
+  const handleConfirm = (edit: EditUserType) => {
+    dispatch({ type: 'admin/updateUser', payload: edit })
   }
   // 删除员工
   const handleRemoveUser = (id: string) => {
-    console.log(id)
+    dispatch({ type: 'admin/removeUser', payload: id })
   }
 
   // 处理提交查询结果
@@ -94,8 +130,8 @@ const User: React.FC<UserProps> = props => {
       <UserTable
         userResult={userResultList}
         loading={searchLoading}
-        onEdit={(id) => console.log(id)}
-        onRemove={(id) => console.log(id)}
+        onEdit={handleEditUser}
+        onRemove={handleRemoveUser}
         onChangePage={handleChangePage}
       />
     )
@@ -117,6 +153,12 @@ const User: React.FC<UserProps> = props => {
       />
       <WhiteSpace />
       {resultListDOM}
+      {showEditUserModal === true && (
+        <UserModal
+          onCancel={handleCancelEdit}
+          onConfirm={handleConfirm}
+        />
+      )}
     </div>
   )
 }

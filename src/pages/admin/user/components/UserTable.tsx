@@ -1,7 +1,7 @@
 import React from 'react'
 import { Popconfirm, Divider, Table } from 'antd'
 import { PaginationConfig } from 'antd/es/pagination'
-import { userResultListSelectType, userSelectType } from '../../selector'
+import { userResultListSelectType, userSelectType } from '../selector'
 
 interface UserTableProps {
   // 是否正在加载中

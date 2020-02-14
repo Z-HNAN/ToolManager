@@ -29,6 +29,16 @@ export const hiddenSearchResultSelector = createSelector(
 )
 
 /**
+ * 是否展示modal
+ */
+export const showEditUserModalSelector = createSelector(
+  [
+    (state: IConnectState) => state.admin.editUser,
+  ],
+  (editUser): boolean => isNil(editUser) === false,
+)
+
+/**
  * 符合条件的查询信息
  */
 export const userResultListSelector = createSelector(

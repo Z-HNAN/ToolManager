@@ -1,4 +1,6 @@
 import request, { OperationResultType } from '@/utils/request'
+import { EditUserType } from '@/pages/admin/user'
+import { EditWorkcellType } from '@/pages/admin/department'
 
 /**
  * 拉取权限信息
@@ -57,6 +59,20 @@ export async function fetchUser(
 }
 
 /**
+ * 删除user信息
+ */
+export async function removeUser(
+  { id }: { id: string },
+): Promise<OperationResultType> {
+  return request('user', {
+    method: 'DELETE',
+    data: {
+      id,
+    },
+  })
+}
+
+/**
  * 删除workcell信息
  */
 export async function removeWorkCell(
@@ -82,8 +98,26 @@ export async function updateAuthority(
   })
 }
 
+export async function updateUser(
+  { id, workcellId, workerId, authName, username, password, phone, authorityId }: EditUserType,
+): Promise<OperationResultType> {
+  return request('user', {
+    method: 'POST',
+    data: {
+      id,
+      workcellId,
+      workerId,
+      authName,
+      username,
+      password,
+      phone,
+      authorityId,
+    },
+  })
+}
+
 export async function updateWorkCell(
-  { id, name, managerId }: { id: string | null, name: string, managerId: string | null }
+  { id, name, managerId }: EditWorkcellType,
 ): Promise<OperationResultType> {
   return request('workcell', {
     method: 'POST',
