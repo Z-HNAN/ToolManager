@@ -121,9 +121,9 @@ const User: React.FC<UserProps> = props => {
     dispatch({ type: 'admin/clearUserResultList' })
   }
   // 处理改变当前页
-  const handleChangePage = (currentPage: number) => {
+  const handleChangePage = (nextPage: number) => {
     const { page } = pagationStatus
-    const step = currentPage - page > 0 ? currentPage - page : 0
+    const step = nextPage - page > 0 ? nextPage - page : 0
     // 可能存在跳页的状况，所以要依次去选择
     for (let i = 1; i <= step; i += 1) {
       // 查询

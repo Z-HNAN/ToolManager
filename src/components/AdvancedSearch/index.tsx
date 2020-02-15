@@ -22,6 +22,8 @@ export type AdvancedSearchItem = [
 
 interface AdvancedSearchProps {
   search: AdvancedSearchItem[]
+  // 表单间隔 24 / interval (个/行)
+  interval?: 8 | 6
   onSearch: (values: any) => void
   onClear?: () => void
   form: FormComponentProps['form']
@@ -41,6 +43,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = props => {
   const {
     form,
     onClear = () => {},
+    interval = 8,
     onSearch,
     search,
   } = props
@@ -48,6 +51,7 @@ const AdvancedSearch: React.FC<AdvancedSearchProps> = props => {
   // 高级搜索区域
   const fields = search.map(advancedSearchItem => (
     <FieldItem
+      interval={interval}
       key={advancedSearchItem[1]}
       advancedSearchItem={advancedSearchItem}
       getFieldDecorator={form.getFieldDecorator}

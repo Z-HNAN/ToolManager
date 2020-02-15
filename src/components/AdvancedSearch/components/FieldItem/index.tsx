@@ -10,6 +10,7 @@ import { AdvancedSearchItem } from '../../index'
 
 interface FieldItemProps {
   className?: string
+  interval: number
   advancedSearchItem: AdvancedSearchItem
   getFieldDecorator: WrappedFormUtils['getFieldDecorator']
 }
@@ -17,6 +18,7 @@ interface FieldItemProps {
 const FieldItem: React.FC<FieldItemProps> = props => {
   const {
     className: classNameProps,
+    interval,
     advancedSearchItem,
     getFieldDecorator,
   } = props
@@ -51,7 +53,7 @@ const FieldItem: React.FC<FieldItemProps> = props => {
   }
 
   return (
-    <Col span={8} className={classNameProps}>
+    <Col span={interval} className={classNameProps}>
       <Form.Item label={label} style={{ display: 'flex', marginBottom: 4 }}>
         {getFieldDecorator(name, {
           rules,
