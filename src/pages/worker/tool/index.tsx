@@ -4,7 +4,7 @@
 import React from 'react'
 import { Dispatch, AnyAction } from 'redux'
 import { router } from 'umi'
-import { Button, Empty } from 'antd'
+import { Button, Empty, Spin } from 'antd'
 import { AdvancedSearch, WhiteSpace } from '@/components'
 import { undefinedToNull } from '@/utils'
 import { BasicPagation } from '@/models/global'
@@ -84,11 +84,14 @@ const Tool: React.FC<ToolProps> = props => {
 
   // 处理查看详情
   const handleToolInfo = (id: string) => {
-
+    dispatch({ type: 'worker/changeToolInfoId', payload: id })
+    router.push('/worker/toolinfo')
   }
 
   let resultListDOM = (
-    <Empty description="点击搜索按钮进行筛选" />
+    <Spin spinning={searchLoading === true}>
+      <Empty description="点击搜索按钮进行筛选" />
+    </Spin>
   )
   if (hiddenSearchResult === false) {
     resultListDOM = (

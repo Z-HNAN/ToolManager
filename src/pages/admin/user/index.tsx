@@ -5,7 +5,7 @@
 import React from 'react'
 import { Dispatch, AnyAction } from 'redux'
 import { connect } from 'dva'
-import { Button, Empty } from 'antd'
+import { Button, Empty, Spin } from 'antd'
 import { AdvancedSearch, WhiteSpace } from '@/components'
 import { UserSearch } from '@/models/admin'
 import { IConnectState } from '@/models/connect'
@@ -130,9 +130,10 @@ const User: React.FC<UserProps> = props => {
       dispatch({ type: 'admin/searchUserResult', payload: (page + i) })
     }
   }
-
   let resultListDOM = (
-    <Empty description="点击搜索按钮进行筛选" />
+    <Spin spinning={searchLoading === true}>
+      <Empty description="点击搜索按钮进行筛选" />
+    </Spin>
   )
 
   if (hiddenSearchResult === false) {
