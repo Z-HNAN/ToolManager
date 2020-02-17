@@ -3,8 +3,9 @@ import { router } from 'umi'
 import { Subscription, Effect } from 'dva'
 import { isNil } from 'lodash'
 import * as wokerService from '@/services/worker'
-import { BorrowModalFormParams } from '@/pages/worker/toolinfo/components/BorrowModal'
-import { RepairModalFormParams } from '@/pages/worker/toolinfo/components/RepairModal'
+import { BorrowModalFormParams } from '@/pages/worker/restore/components/BorrowModal'
+import { RepairModalFormParams } from '@/pages/worker/restore/components/RepairModal'
+import { RestoreModalFormParams } from '@/pages/worker/restore/components/RestoreModal'
 import { BasicAdvancedSerch } from './global'
 import { IConnectState } from './connect.d'
 import { OperationResultType } from '@/utils/request'
@@ -75,6 +76,17 @@ export type ToolInfoUnitType = {
   toolBorrowInfo: ToolBorrowInfoType | null
 }
 
+/**
+ * 借用夹具类型
+ */
+export type BorrowToolType = {
+  id: string
+  code: string
+  borrowTime: number
+  restoreTime: number
+  location: string
+}
+
 export interface IWorkerModelState {
   toolAdvancedSearch: ToolAdvancedSearch
   toolSearchResult: ToolSearchResultType | null
@@ -82,12 +94,24 @@ export interface IWorkerModelState {
   toolInfoUnitList: ToolInfoUnitType[]
   toolUnitBorrowId: null | string
   toolUnitRepairId: null | string
+  borrowTools: BorrowToolType[]
+  borrowToolBorrowId: null | string
+  borrowToolRepairId: null | string
+  borrowToolRestoreId: null | string
 }
 
 export interface IWorkerModelType {
   namespace: 'worker'
   state: IWorkerModelState
   reducers: {
+    /* 改变borrowTools已借内容 */
+    changeBorrowTools: Reducer<any>,
+    /* 改变borrowTools中borrowId */
+    changeBorrowToolBorrowId: Reducer<any>,
+    /* 改变borrowTools中repairId */
+    changeBorrowToolRepairId: Reducer<any>,
+    /* 改变borrowTools中restoreId */
+    changeBorrowToolRestoreId: Reducer<any>,
     /* 改变toolSearch查询内容 */
     changeToolAdvancedSearchContent: Reducer<any>,
     /* 改变toolSearch查询分页 */
@@ -108,10 +132,20 @@ export interface IWorkerModelType {
   effects: {
     /* 获取夹具详情的实体 */
     fetchToolInfoUnit: Effect,
+    /* 获取借用的夹具信息 */
+    fetchBorrowTools: Effect,
     /* 检查toolInfoId是否存在 */
     checkToolInfoId: Effect,
+    /* 初始化借用夹具信息 */
+    initBorrowTools: Effect,
     /* 查询toolSearch结果 */
     searchToolResult: Effect,
+    /* 夹具归还 */
+    borrowToolRestore: Effect,
+    /* 夹具续借 */
+    borrowToolReBorrow: Effect,
+    /* 夹具报修 */
+    borrowToolRepair: Effect,
     /* 夹具借用 */
     toolUnitBorrow: Effect,
     /* 夹具报修 */
@@ -120,6 +154,8 @@ export interface IWorkerModelType {
   subscriptions: {
     /* 初始化toolInfo, 1.检查toolInfoId是否存在 2.拉取夹具实体 */
     initToolInfo: Subscription,
+    /* 初始化借用tools */
+    initBorrowTools: Subscription,
   }
 }
 
@@ -132,8 +168,27 @@ const WorkerModel: IWorkerModelType = {
     toolInfoUnitList: [],
     toolUnitBorrowId: null,
     toolUnitRepairId: null,
+    borrowTools: [],
+    borrowToolBorrowId: null,
+    borrowToolRepairId: null,
+    borrowToolRestoreId: null,
   },
   reducers: {
+    changeBorrowTools(state: IWorkerModelState, { payload: borrowTools }) {
+      return { ...state, borrowTools }
+    },
+    changeBorrowToolBorrowId(state: IWorkerModelState, { payload: id }) {
+      // id可能为null
+      return { ...state, borrowToolBorrowId: id }
+    },
+    changeBorrowToolRepairId(state: IWorkerModelState, { payload: id }) {
+      // id可能为null
+      return { ...state, borrowToolRepairId: id }
+    },
+    changeBorrowToolRestoreId(state: IWorkerModelState, { payload: id }) {
+      // id可能为null
+      return { ...state, borrowToolRestoreId: id }
+    },
     changeToolAdvancedSearchContent(state: IWorkerModelState, { payload: toolSearch }) {
       // 重置查询结果
       const toolAdvancedSearch: ToolAdvancedSearch = {
@@ -246,6 +301,19 @@ const WorkerModel: IWorkerModelType = {
       // 存储toolInfoUnit
       yield put({ type: 'changeToolInfoUnit', payload: units })
     },
+    *fetchBorrowTools(_, { call, put }) {
+      // 获取borrowTool实体
+      const response = yield call(wokerService.fetchBorrowTools, {})
+      // 过滤数据
+      const borrowTools: BorrowToolType[] = response.map((tool: any) => ({
+        id: tool.id,
+        code: tool.code,
+        borrowTime: tool.borrowTime,
+        restoreTime: tool.restoreTime,
+        location: tool.location,
+      }))
+      yield put({ type: 'changeBorrowTools', payload: borrowTools })
+    },
     *searchToolResult({ payload: nextPage }, { call, put, select }) {
       // nextPage此业务中保证递增增长，如果在pagation中跳跃，则会自动发送中间的页数
       const [
@@ -307,6 +375,66 @@ const WorkerModel: IWorkerModelType = {
         router.replace('/worker/tool')
       }
     },
+    *initBorrowTools(_, { put, select }) {
+      const borrowTools = yield select(
+        (state: IConnectState) => state.worker.borrowTools,
+      )
+      // 如果为空数组，则进行获取
+      if (borrowTools.length === 0) {
+        yield put({ type: 'fetchBorrowTools' })
+      }
+    },
+    *borrowToolRestore({ payload }, { call, put }) {
+      const { id } = payload as RestoreModalFormParams
+      const result: OperationResultType = yield call(wokerService.borrowToolRestore, { id })
+      if (result.success === false) {
+        // 借用失败提示用户
+        yield put({ type: 'global/changeDialog', payload: { type: 'warning', msg: result.msg } })
+      }
+      // 取消toolId
+      yield put({ type: 'changeBorrowToolRestoreId', payload: null })
+      // 刷新列表
+      yield put({ type: 'fetchBorrowTools' })
+    },
+    *borrowToolReBorrow({ payload }, { call, put }) {
+      const { id, restoreTime, productionLineId } = payload as BorrowModalFormParams
+
+      try {
+        // 1.进行归还
+        const restoreResult: OperationResultType = yield call(wokerService.borrowToolRestore, { id })
+        if (restoreResult.success === false) {
+          // 归还失败提示用户
+          throw new Error(restoreResult.msg)
+        }
+
+        // 2.进行借阅
+        const borrowResult: OperationResultType = yield call(wokerService.toolUnitBorrow, { id, restoreTime, productionLineId })
+        if (borrowResult.success === false) {
+          // 借用失败提示用户
+          throw new Error(restoreResult.msg)
+        }
+      } catch (e) {
+        // 报告错误信息
+        yield put({ type: 'global/changeDialog', payload: { type: 'warning', msg: e.message } })
+      } finally {
+        // 取消toolId
+        yield put({ type: 'changeBorrowToolBorrowId', payload: null })
+        // 刷新列表
+        yield put({ type: 'fetchBorrowTools' })
+      }
+    },
+    *borrowToolRepair({ payload }, { call, put }) {
+      const { id, remark } = payload as RepairModalFormParams
+      const result: OperationResultType = yield call(wokerService.toolUnitRepair, { id, remark })
+      if (result.success === false) {
+        // 报修失败提示用户
+        yield put({ type: 'global/changeDialog', payload: { type: 'warning', msg: result.msg } })
+      }
+      // 维护成功，取消toolId
+      yield put({ type: 'changeBorrowToolRepairId', payload: null })
+      // 刷新列表
+      yield put({ type: 'fetchBorrowTools' })
+    },
     *toolUnitBorrow({ payload }, { call, put }) {
       const { id, restoreTime, productionLineId } = payload as BorrowModalFormParams
       const result: OperationResultType = yield call(wokerService.toolUnitBorrow, { id, restoreTime, productionLineId })
@@ -340,6 +468,13 @@ const WorkerModel: IWorkerModelType = {
           dispatch({ type: 'checkToolInfoId' })
           // 获取夹具实体信息
           dispatch({ type: 'fetchToolInfoUnit' })
+        }
+      })
+    },
+    initBorrowTools({ dispatch, history }) {
+      return history.listen(({ pathname }) => {
+        if (pathname === '/worker/restore') {
+          dispatch({ type: 'initBorrowTools' })
         }
       })
     },

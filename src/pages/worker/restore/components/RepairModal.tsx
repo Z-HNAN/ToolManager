@@ -7,7 +7,7 @@ import { Form, Modal, Input } from 'antd'
 import { FormComponentProps } from 'antd/es/form'
 import { IConnectState } from '@/models/connect'
 import {
-  toolUnitRepairModalVisibleSelector,
+  borrowToolRepairModalVisibleSelector,
   toolRepairUnitInfoSelector,
 } from '../selector'
 
@@ -33,7 +33,7 @@ const formItemLayout = {
 
 const mapStateToProps = (state: IConnectState) => {
   return {
-    visible: toolUnitRepairModalVisibleSelector(state),
+    visible: borrowToolRepairModalVisibleSelector(state),
     toolInfo: toolRepairUnitInfoSelector(state),
   }
 }

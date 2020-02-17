@@ -51,6 +51,8 @@ const HeaderComponent: React.FC<PropsType> = props => {
   const handleLogout = () => {
     confirm({
       title: '你确定要退出吗?',
+      okText: '确认',
+      cancelText: '取消',
       onOk() {
         // 发出退出事件
         dispatch({ type: 'global/logout' })

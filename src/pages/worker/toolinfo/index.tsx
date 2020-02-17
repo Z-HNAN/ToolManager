@@ -80,7 +80,7 @@ const Toolinfo: React.FC<ToolinfoProps> = props => {
     // 提交维护夹具，维护成功后，会删除RepairId，关闭modal
     dispatch({ type: 'worker/toolUnitRepair', payload: { id, remark } })
   }
-  // 处理取消借用夹具
+  // 处理取消维护夹具
   const handleCancelRepair = () => {
     dispatch({ type: 'worker/changeToolUnitRepairId', payload: null })
   }

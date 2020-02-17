@@ -8,7 +8,7 @@ import { Form, Modal, Input, Select, DatePicker } from 'antd'
 import { FormComponentProps } from 'antd/es/form'
 import { IConnectState } from '@/models/connect'
 import {
-  toolUnitBorrowModalVisibleSelector,
+  borrowToolBorrowModalVisibleSelector,
   toolBorrowUnitInfoSelector,
 } from '../selector'
 
@@ -35,7 +35,7 @@ const formItemLayout = {
 
 const mapStateToProps = (state: IConnectState) => {
   return {
-    visible: toolUnitBorrowModalVisibleSelector(state),
+    visible: borrowToolBorrowModalVisibleSelector(state),
     toolInfo: toolBorrowUnitInfoSelector(state),
   }
 }
@@ -78,7 +78,7 @@ const BorrowModal: React.FC<BorrowModalProps> = props => {
 
   return (
     <Modal
-      title="申请借用"
+      title="申请续借"
       visible={visible}
       onOk={handleOk}
       onCancel={handleCancel}

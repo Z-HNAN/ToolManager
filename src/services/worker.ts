@@ -1,7 +1,7 @@
-import request, { OperationResultType } from '@/utils/request'
-import { ToolType } from '@/models/worker'
-import { BorrowModalFormParams } from '@/pages/worker/toolinfo/components/BorrowModal'
-import { RepairModalFormParams } from '@/pages/worker/toolinfo/components/RepairModal'
+import request from '@/utils/request'
+import { BorrowModalFormParams } from '@/pages/worker/restore/components/BorrowModal'
+import { RepairModalFormParams } from '@/pages/worker/restore/components/RepairModal'
+import { RestoreModalFormParams } from '@/pages/worker/restore/components/RestoreModal'
 
 // 夹具的状态map
 const mapToolStatus: {
@@ -12,6 +12,22 @@ const mapToolStatus: {
   3: 'repaire', // 检修中
 }
 
+
+/**
+ * 拉取用户借用的夹具信息
+ */
+export async function fetchBorrowTools () {
+  const response = await request('borrowTool')
+
+  // 过滤数据
+  return response.map((tool: any) => ({
+    id: tool.id,
+    code: tool.code,
+    borrowTime: tool.borrowTime,
+    restoreTime: tool.restoreTime,
+    location: tool.location,
+  }))
+}
 
 export type fetchToolParamsType = {
   startIndex: number
@@ -149,6 +165,21 @@ export async function toolUnitRepair(
       id,
       remark,
       createTime: Date.now(),
+    },
+  })
+}
+
+/**
+ * 归还夹具
+ */
+export async function borrowToolRestore(
+  { id }: RestoreModalFormParams,
+) {
+  return request('toolUnitRestore', {
+    method: 'POST',
+    data: {
+      id,
+      restoreTime: Date.now(),
     },
   })
 }
