@@ -1,6 +1,7 @@
 import { IUsersModelState } from './users'
 import { IAdminModelState } from './admin'
 import { IWorkerModelState } from './worker'
+import { IStorekeeperModelState } from './storekeeper'
 import { GlobalModelStateType } from './global'
 
 export {
@@ -27,6 +28,7 @@ export interface IConnectState {
   global: GlobalModelStateType
   admin: IAdminModelState
   worker: IWorkerModelState
+  storekeeper: IStorekeeperModelState
 }
 
 // export interface Route  {

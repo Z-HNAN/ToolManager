@@ -23,7 +23,7 @@ export type AdvancedSearchItem = [
 interface AdvancedSearchProps {
   search: AdvancedSearchItem[]
   // 表单间隔 24 / interval (个/行)
-  interval?: 8 | 6
+  interval?: 8 | 6 | 12
   onSearch: (values: any) => void
   onClear?: () => void
   form: FormComponentProps['form']

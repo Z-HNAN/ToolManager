@@ -67,7 +67,7 @@ export async function removeUser(
 ): Promise<OperationResultType> {
   return request('user', {
     method: 'DELETE',
-    data: {
+    params: {
       id,
     },
   })
@@ -81,7 +81,7 @@ export async function removeWorkCell(
 ): Promise<OperationResultType> {
   return request('workcell', {
     method: 'DELETE',
-    data: {
+    params: {
       id,
     },
   })
