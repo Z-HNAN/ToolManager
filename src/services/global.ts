@@ -18,7 +18,7 @@ export async function login (
   return {
     id: '123456',
     username: '赵大锤',
-    authority: ['worker', 'admin', 'storekeeper', 'supervisor', 'repairer', 'manager'],
+    authority: ['storekeeper', 'worker', 'admin', 'supervisor', 'repairer', 'manager'],
   }
 }
 
