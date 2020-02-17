@@ -133,7 +133,7 @@ const Productionline: React.FC<ProductionlineProps> = props => {
       <AdvancedSearch
         interval={12}
         search={[
-          ['产线名称', 'name', 'text'],
+          ['生产线名称', 'name', 'text'],
         ]}
         onSearch={handleSearch}
         onClear={handleCancel}
