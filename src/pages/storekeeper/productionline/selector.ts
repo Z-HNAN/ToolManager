@@ -3,7 +3,7 @@ import { IConnectState } from '@/models/connect.d'
 import { BasicPagation } from '@/models/global'
 import { ProductionlineResultType, ProductionlineAdvancedSearch } from '@/models/storekeeper'
 import { isNil } from 'lodash'
-import { EditProductionlineType } from '.'
+import { EditProductionlineType } from './index'
 
 export type ProductionlineSelectType = {
   id: string
