@@ -40,6 +40,8 @@ const routes: IRoute[] = [
           { path: '/storekeeper', redirect: '/storekeeper/tool' }, // 默认inedx为工夹具管理
           // 工夹具管理
           { path: '/storekeeper/tool', component: './storekeeper/tool', title: '工夹具管理' },
+          // 工夹具管理详情，已经从StorekeeperLayout中剔除，
+          { path: '/storekeeper/toolInfo', component: './storekeeper/toolInfo', title: '工夹具详情' },
           // 提交采购
           { path: '/storekeeper/purchase', component: './storekeeper/purchase', title: '提交采购' },
           // 提交保修

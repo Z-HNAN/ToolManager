@@ -8,15 +8,26 @@ import { Menu, Icon } from 'antd';
 import { ClickParam } from 'antd/lib/menu'
 
 import BasicLayout from './BasicLayout'
+import WorkerLayout from './WorkerLayout'
 
 interface StorekeeperLayoutProps {
   children: ReactElement
+  location: Location
 }
 
-// 需要路由跳转的页面
+// 不走统一layout的界面
+const excludePath = [
+  '/storekeeper/toolInfo',
+]
 
+// 需要路由跳转的页面
 const StorekeeperLayout: React.FC<StorekeeperLayoutProps> = props => {
-  const { children } = props
+  const { location, children } = props
+
+  // 不走左侧菜单栏的layout,统一进行worker的layout
+  if (excludePath.includes(location.pathname)) {
+    return (<WorkerLayout>{children}</WorkerLayout>)
+  }
 
   // 处理router跳转
   function handleMenuClick(param: ClickParam) {
