@@ -1,5 +1,6 @@
 import request from '@/utils/request'
 import { EditProductionlineType } from '@/pages/storekeeper/productionline'
+import { EditRepairOrderType } from '@/models/storekeeper'
 
 /**
  *  拉取夹具信息
@@ -176,6 +177,110 @@ export async function updateToolUnit(
       sequence,
       location,
       billNo: billId,
+      createTime: Date.now(),
+    },
+  })
+}
+
+/**
+ * 获取报修单
+ */
+export async function fetchRepairOrder() {
+  const response = await request('repairOrder')
+  return response.map((order: any) => ({
+    id: order.id,
+    name: order.name,
+    createTime: order.createTime,
+    remark: order.remark,
+  }))
+}
+
+/**
+ * 获取报修项
+ */
+export async function fetchRepairOrderMapUnit(
+  { orderId }: { orderId: string | null },
+) {
+  const response = await request('toolUnitRepair', {
+    method: 'GET',
+    params: { orderId }
+  })
+  return response.map((unit: any) => ({
+    id: unit.id,
+    code: unit.code,
+    location: unit.location,
+    remark: unit.remark,
+    createTime: unit.createTime,
+    workerName: unit.workerName,
+  }))
+}
+
+/**
+ * 将报修项增加到报修单中
+ */
+export async function addRepairToOrder(
+  { repairUnitId, orderInfoId }: { repairUnitId: string, orderInfoId: string },
+) {
+  return request('addRepairToOrder', {
+    method: 'POST',
+    data: {
+      repairUnitId,
+      orderInfoId,
+    },
+  })
+}
+
+/**
+ * 将报修项移除报修单
+ */
+export async function removeRepairFromOrder(
+  { repairUnitId, orderInfoId }: { repairUnitId: string, orderInfoId: string },
+) {
+  return request('removeRepairFromOrder', {
+    method: 'POST',
+    data: {
+      repairUnitId,
+      orderInfoId,
+    },
+  })
+}
+
+/**
+ * 提交报修单
+ */
+export async function submitOrder(
+  { orderId }: { orderId: string },
+) {
+  return request('submitOrder', {
+    method: 'POST',
+    data: { orderId },
+  })
+}
+
+/**
+ * 删除报修单
+ */
+export async function removeRepairOrder(
+  { id } : { id: string },
+) {
+  return request('repairOrder', {
+    method: 'DELETE',
+    params: { id },
+  })
+}
+
+/**
+ * 更新报修单
+ */
+export async function updateRepairOrder(
+  { id, name, remark }: EditRepairOrderType,
+) {
+  return request('repairOrder', {
+    method: 'POST',
+    data: {
+      id,
+      name,
+      remark,
       createTime: Date.now(),
     },
   })
