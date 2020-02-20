@@ -33,6 +33,11 @@ const AutoSuggest: React.ForwardRefExoticComponent<
   const [inputValue, setInputValue] = React.useState(isNil(value) ? '' : value.label)
   const [searchValue, setSearchValue] = React.useState<any>(null)
 
+  React.useEffect(() => {
+    setInputValue(isNil(value) ? '' : value.label)
+    setSearchValue(value)
+  }, [value, setInputValue, setSearchValue])
+
   // 处理dataSourceId,
   const processDataSource = dataSource.map((item: any) => ({
     ...item,
@@ -44,7 +49,6 @@ const AutoSuggest: React.ForwardRefExoticComponent<
     const search = isNil(currency) ? undefined : currency
     onChange(search)
   }
-
 
   /**
    * 处理内容变化

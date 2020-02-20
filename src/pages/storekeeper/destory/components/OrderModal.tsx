@@ -2,7 +2,7 @@ import React from 'react'
 import { FormComponentProps } from 'antd/es/form'
 import { Modal, Form } from 'antd'
 import { EditRepairOrderType } from '@/models/storekeeper'
-import OrderEditForm from './OrderEditForm'
+import OrderForm from './OrderForm'
 
 interface OrderModalProps {
   form: FormComponentProps['form']
@@ -37,7 +37,7 @@ const OrderModal: React.FC<OrderModalProps> = props => {
       okText="确定"
       cancelText="取消"
     >
-      <OrderEditForm form={form} />
+      <OrderForm form={form} />
     </Modal>
   )
 

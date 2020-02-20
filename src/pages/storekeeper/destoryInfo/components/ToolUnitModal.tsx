@@ -1,10 +1,10 @@
 import React from 'react'
 import { FormComponentProps } from 'antd/es/form'
 import { Modal, Form } from 'antd'
-import { EditRepairOrderType } from '@/models/storekeeper'
-import OrderEditForm from './OrderEditForm'
+import { EditDestoryUnitType } from '@/models/storekeeper'
+import ToolUnitForm from './ToolUnitForm'
 
-interface OrderModalProps {
+interface ToolUnitModalProps {
   form: FormComponentProps['form']
   // 确认更新
   onConfirm: (value: any) => void
@@ -12,7 +12,7 @@ interface OrderModalProps {
   onCancel: () => void
 }
 
-const OrderModal: React.FC<OrderModalProps> = props => {
+const ToolUnitModal: React.FC<ToolUnitModalProps> = props => {
   const {
     form,
     onConfirm,
@@ -23,24 +23,24 @@ const OrderModal: React.FC<OrderModalProps> = props => {
     // 表单无误进行提交
     form.validateFields((err, newValues) => {
       if (!err) {
-        onConfirm(newValues as EditRepairOrderType)
+        onConfirm(newValues as EditDestoryUnitType)
       }
     })
   }
 
   return (
     <Modal
-      title="报表信息"
+      title="报废夹具实体信息"
       visible
       onOk={handleUpdate}
       onCancel={onCancel}
       okText="确定"
       cancelText="取消"
     >
-      <OrderEditForm form={form} />
+      <ToolUnitForm form={form} />
     </Modal>
   )
 
 }
 
-export default Form.create<OrderModalProps>()(OrderModal)
+export default Form.create<ToolUnitModalProps>()(ToolUnitModal)

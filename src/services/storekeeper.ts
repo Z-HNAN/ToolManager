@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 import { EditProductionlineType } from '@/pages/storekeeper/productionline'
-import { EditRepairOrderType } from '@/models/storekeeper'
+import { EditRepairOrderType, EditDestoryOrderType } from '@/models/storekeeper'
 
 /**
  *  拉取夹具信息
@@ -151,7 +151,7 @@ export async function removeToolUnit(
     method: 'DELETE',
     params: {
       toolId: id,
-    }
+    },
   })
 }
 
@@ -260,10 +260,10 @@ export async function submitOrder(
 /**
  * 删除报修单
  */
-export async function removeRepairOrder(
+export async function removeDestoryOrder(
   { id } : { id: string },
 ) {
-  return request('repairOrder', {
+  return request('destoryOrder', {
     method: 'DELETE',
     params: { id },
   })
@@ -272,6 +272,49 @@ export async function removeRepairOrder(
 /**
  * 更新报修单
  */
+export async function updateDestoryOrder(
+  { id, name, remark }: EditDestoryOrderType,
+) {
+  return request('destoryOrder', {
+    method: 'POST',
+    data: {
+      id,
+      name,
+      remark,
+      createTime: Date.now(),
+    },
+  })
+}
+
+/**
+ * 获取报废单
+ */
+export async function fetchDestoryOrder() {
+  const response = await request('destoryOrder')
+  return response.map((order: any) => ({
+    id: order.id,
+    name: order.name,
+    createTime: order.createTime,
+    remark: order.remark,
+  }))
+}
+
+
+/**
+ * 删除报废单
+ */
+export async function removeRepairOrder(
+  { id }: { id: string },
+) {
+  return request('repairOrder', {
+    method: 'DELETE',
+    params: { id },
+  })
+}
+
+ /**
+  * 更新报废单
+  */
 export async function updateRepairOrder(
   { id, name, remark }: EditRepairOrderType,
 ) {
@@ -283,5 +326,86 @@ export async function updateRepairOrder(
       remark,
       createTime: Date.now(),
     },
+  })
+}
+
+/**
+ * 获取报废项
+ */
+export async function fetchDestoryOrderMapUnit(
+  { orderId }: { orderId: string },
+) {
+  const response = await request('toolUnitDestory', {
+    method: 'GET',
+    params: { orderId },
+  })
+  return response.map((unit: any) => ({
+    id: unit.id,
+    toolId: unit.toolId,
+    code: unit.code,
+    location: unit.location,
+    remark: unit.remark,
+    createTime: unit.createTime,
+  }))
+}
+
+/**
+ * 获取夹具code-id
+ */
+export async function fetchToolCode(
+  { search }: { search: string },
+) {
+  const response = await request('toolCode', {
+    method: 'GET',
+    params: { search },
+  })
+  return response.map((tool: any) => ({
+    id: tool.id,
+    code: tool.code,
+  }))
+}
+
+/**
+ * 从报废单移除夹具
+ */
+export async function removeDestoryFromOrder(
+  { orderInfoId, destoryUnitId }: { orderInfoId: string, destoryUnitId: string },
+) {
+  return request('removeDestoryFromOrder', {
+    method: 'POST',
+    data: {
+      destoryUnitId,
+      orderInfoId,
+    },
+  })
+}
+
+/**
+ * 更新报废夹具
+ */
+export async function updateDestoryUnit(
+  { id, orderId, toolId, code, remark }: { id: string | null, orderId: string, toolId: string, code: string, remark: string },
+) {
+  return request('addDestoryToOrder', {
+    method: 'POST',
+    data: {
+      id,
+      orderId,
+      toolId,
+      remark,
+      createTime: Date.now(),
+    },
+  })
+}
+
+/**
+ * 提交报废单
+ */
+export async function submitDestoryOrder(
+  { orderId }: { orderId: string },
+) {
+  return request('submitDestoryOrder', {
+    method: 'POST',
+    data: { orderId },
   })
 }

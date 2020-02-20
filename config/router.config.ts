@@ -48,6 +48,8 @@ const routes: IRoute[] = [
           { path: '/storekeeper/repair', component: './storekeeper/repair', title: '提交报修' },
           // 提交报废
           { path: '/storekeeper/destory', component: './storekeeper/destory', title: '提交报废' },
+          // 报废单详情
+          { path: '/storekeeper/destoryInfo', component: './storekeeper/destoryInfo', title: '报表详情' },
           // 生产线管理
           { path: '/storekeeper/productionline', component: './storekeeper/productionline', title: '生产线管理' },
           { path: '*', redirect: '/storekeeper/tool' }, // 未匹配到重定向去工夹具管理

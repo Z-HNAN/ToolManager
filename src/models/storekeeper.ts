@@ -100,6 +100,14 @@ export type RepairOrderType = {
   remark: string
 }
 
+export type DestoryOrderType = {
+  id: string
+  name: string
+  createTime: number
+  remark: string
+}
+
+
 export type EditRepairOrderType = {
   id: string | null
   name: string
@@ -107,6 +115,18 @@ export type EditRepairOrderType = {
 }
 
 export const EMPTY_EDIT_REPAIRORDER: EditRepairOrderType = {
+  id: null,
+  name: '',
+  remark: '',
+}
+
+export type EditDestoryOrderType = {
+  id: string | null
+  name: string
+  remark: string
+}
+
+export const EMPTY_EDIT_DESTORYORDER: EditDestoryOrderType = {
   id: null,
   name: '',
   remark: '',
@@ -127,6 +147,40 @@ export type RepairOrderMapUnitType = {
   [orderId: string]: ToolUnitRepairType[]
 }
 
+export type ToolUnitDestoryType = {
+  id: string
+  toolId: string
+  code: string
+  location: string
+  remark: string
+  createTime: number
+  workerName: string
+}
+
+export type DestoryOrderMapUnitType = {
+  // 全部对应到报废单上
+  [orderId: string]: ToolUnitDestoryType[]
+}
+
+export type EditDestoryUnitType = {
+  id: string | null
+  toolId: string
+  code: string
+  remark: string
+}
+
+export const EMPTY_EDIT_DESTORYUNIT: EditDestoryUnitType = {
+  id: null,
+  toolId: '',
+  code: '',
+  remark: '',
+}
+
+export type ToolCodeSearchType = {
+  id: string
+  code: string
+}
+
 export interface IStorekeeperModelState {
   editProductionline: EditProductionlineType | null
   productionlineAdvancedSearch: ProductionlineAdvancedSearch
@@ -140,12 +194,28 @@ export interface IStorekeeperModelState {
   editRepairOrder: EditRepairOrderType | null
   repairOrderMapUnit: RepairOrderMapUnitType
   repairOrderInfoId: string | null
+  destoryOrders: DestoryOrderType[]
+  editDestoryOrder: EditDestoryOrderType | null
+  destoryOrderInfoId: string | null
+  destoryOrderMapUnit: DestoryOrderMapUnitType
+  editDestoryUnit: EditDestoryUnitType | null
+  toolCodeSearch: ToolCodeSearchType[]
 }
 
 export interface IStorekeeperModelType {
   namespace: 'storekeeper'
   state: IStorekeeperModelState,
   reducers : {
+    /* 改变destoryOrders报废单 */
+    changeDestoryOrder: Reducer<any>,
+    /* 改变destoryOrder详情 */
+    changeDestoryOrderInfoId: Reducer<any>,
+    /* 改变destoryOrderMapUnit报废项集合 */
+    changeDestoryOrderMapUnit: Reducer<any>,
+    /* 改变正在编辑的destoryOrder */
+    changeEditDestoryOrder: Reducer<any>,
+    /* 改变正在编辑的destoryUnit */
+    changeEditDestoryUnit: Reducer<any>,
     /* 改变正在编辑的productionline内容 */
     changeEditProductionline: Reducer<any>,
     /* 改变正在编辑的repairOrder */
@@ -168,12 +238,20 @@ export interface IStorekeeperModelType {
     changeToolAdvancedSearchContent: Reducer<any>,
     /* 改变Tool高级搜索限制 */
     changeToolAdvancedSearchLimit: Reducer<any>,
+    /* 改变ToolCode查询结果 */
+    changeToolCodeSearch: Reducer<any>,
     /* 改变Tool查询结果 */
     changeToolSearchResult: Reducer<any>,
     /* 改变查看详情的toolId */
     changeToolInfoId: Reducer<any>,
     /* 改变查看详情的tool实体 */
     changeToolInfoUnits: Reducer<any>,
+    /* 清除destoryOrderMapUnit报废项集合 */
+    clearDestoryOrderMapUnit: Reducer<any>,
+    /* 清除正在编辑的报废单 */
+    clearEditDestoryOrder: Reducer<any>,
+    /* 清除正在编辑的报废项 */
+    clearEditDestoryUnit: Reducer<any>,
     /* 清除正在编辑的生产线 */
     clearEditProductionline: Reducer<any>,
     /* 清除正在编辑的报修单 */
@@ -192,12 +270,22 @@ export interface IStorekeeperModelType {
     addRepairToOrder: Effect,
     /* 检查toolInfo页面中id是否存在，否则跳转界面 */
     checkToolInfoId: Effect,
+    /* 拉取destoryOrder报废单 */
+    fetchDestoryOrder: Effect,
+    /* 拉取报废项集合 */
+    fetchDestoryOrderMapUnit: Effect,
     /* 拉取repairOrder保修单 */
     fetchRepairOrder: Effect,
     /* 拉取保修项集合 */
     fetchRepairOrderMapUnit: Effect,
+    /* 拉取tool-code */
+    fetchToolCodeSearch: Effect,
     /* 拉取夹具详情实体信息 */
     fetchToolInfoUnit: Effect,
+    /* 初始化报废单 */
+    initDestoryOrder: Effect,
+    /* 初始化报废单详情 */
+    initDestoryInfo: Effect,
     /* 初始化保修单 */
     initRepairOrder: Effect,
     /* 初始化repairOrder保修单 */
@@ -206,20 +294,30 @@ export interface IStorekeeperModelType {
     searchProductionlineResult: Effect,
     /* 查询夹具列表 */
     searchToolResult: Effect,
+    /* 提交报废单 */
+    submitDestoryOrder: Effect,
     /* 提交报修单 */
     submitRepairOrder: Effect,
     /* 根据现有搜索条件刷新生产线 */
     refreshProductionline: Effect,
     /* 刷新repair */
     refreshRepair: Effect,
+    /* 删除报废单 */
+    removeDestoryOrder: Effect,
     /* 删除生产线 */
     removeProductionline: Effect,
+    /* 从报废单中移除 */
+    removeDestoryFromOrder: Effect,
     /* 从保修单中移除 */
     removeRepairFromOrder: Effect,
     /* 删除报修单 */
     removeRepairOrder: Effect,
     /* 删除夹具 */
     removeToolUnit: Effect,
+    /* 更新报废单 */
+    updateDestoryOrder: Effect,
+    /* 更新报废项 */
+    updateDestoryUnit: Effect,
     /* 更新生产线 */
     updateEditProductionline: Effect,
     /* 更新repairOrder */
@@ -228,10 +326,14 @@ export interface IStorekeeperModelType {
     updateToolUnit: Effect,
   },
   subscriptions: {
-    /* 初始化ToolInfo */
-    initToolInfo: Subscription
+    /* 初始化destoryOrder */
+    initDestoryOrder: Subscription
+    /* 初始化destoryOrderInfo */
+    intiDestoryOrderInfo: Subscription
     /* 初始化repairOrder */
     initRepairOrder: Subscription
+    /* 初始化ToolInfo */
+    initToolInfo: Subscription
   },
 }
 
@@ -250,8 +352,60 @@ const StorekeeperModel: IStorekeeperModelType = {
     editRepairOrder: null,
     repairOrderMapUnit: {},
     repairOrderInfoId: null,
+    destoryOrders: [],
+    editDestoryOrder: null,
+    destoryOrderInfoId: null,
+    destoryOrderMapUnit: {},
+    editDestoryUnit: null,
+    toolCodeSearch: [],
   },
   reducers: {
+    changeDestoryOrder(state: IStorekeeperModelState, { payload: destoryOrders }) {
+      return { ...state, destoryOrders }
+    },
+    changeDestoryOrderInfoId(state: IStorekeeperModelState, { payload: id }) {
+      // id可能为null
+      return { ...state, destoryOrderInfoId: id }
+    },
+    /* eslint-disable-next-line max-len */
+    changeDestoryOrderMapUnit(state: IStorekeeperModelState, { payload: { orderId, destoryUnits } }) {
+      return {
+        ...state,
+        destoryOrderMapUnit: {
+          ...state.destoryOrderMapUnit,
+          [orderId]: destoryUnits,
+        },
+      }
+    },
+    changeEditDestoryOrder(state: IStorekeeperModelState, { payload: id }) {
+      // id为null,则为新增保修单
+      if (isNil(id) === true) {
+        return { ...state, editDestoryOrder: { ...EMPTY_EDIT_DESTORYORDER } }
+      }
+      // 替换destoryOrder中的内容，进行替换
+      const currentDestoryOrder = state.destoryOrders
+        .find(order => id === order.id) as DestoryOrderType
+      return { ...state, editDestoryOrder: currentDestoryOrder }
+    },
+    changeEditDestoryUnit(state: IStorekeeperModelState, { payload: id }) {
+      // id为null,则为新增报废项
+      if (isNil(id) === true) {
+        return { ...state, editDestoryUnit: { ...EMPTY_EDIT_DESTORYUNIT } }
+      }
+      // 替换editDestoryUnit的内容
+      const destoryOrderInfoId = state.destoryOrderInfoId as string
+      const currentDestoryUnit = state.destoryOrderMapUnit[destoryOrderInfoId]
+        .find(unit => unit.id === id) as ToolUnitDestoryType
+      return {
+        ...state,
+        editDestoryUnit: {
+          id: currentDestoryUnit.id,
+          toolId: currentDestoryUnit.toolId,
+          code: currentDestoryUnit.code,
+          remark: currentDestoryUnit.remark,
+        },
+      }
+    },
     changeEditProductionline(state: IStorekeeperModelState, { payload: id }) {
       // id为null,则为新增生产线
       if (isNil(id) === true) {
@@ -372,6 +526,9 @@ const StorekeeperModel: IStorekeeperModelType = {
       }
       return { ...state, toolAdvancedSearch }
     },
+    changeToolCodeSearch(state: IStorekeeperModelState, { payload: toolCodes }) {
+      return { ...state, toolCodeSearch: toolCodes }
+    },
     changeToolInfoId(state: IStorekeeperModelState, { payload: id }) {
       // id可能为null
       return { ...state, toolInfoId: id }
@@ -403,6 +560,15 @@ const StorekeeperModel: IStorekeeperModelType = {
         ],
       }
       return { ...state, toolResult }
+    },
+    clearDestoryOrderMapUnit(state: IStorekeeperModelState) {
+      return { ...state, destoryOrderMapUnit: {} }
+    },
+    clearEditDestoryOrder(state: IStorekeeperModelState) {
+      return { ...state, editDestoryOrder: null }
+    },
+    clearEditDestoryUnit(state: IStorekeeperModelState) {
+      return { ...state, editDestoryUnit: null }
     },
     clearEditProductionline(state: IStorekeeperModelState) {
       return { ...state, editProductionline: null }
@@ -447,6 +613,31 @@ const StorekeeperModel: IStorekeeperModelType = {
       if (isNil(id)) {
         router.replace('/storekeeper/tool')
       }
+    },
+    *fetchDestoryOrderMapUnit({ payload: orderId }, { call, put }) {
+      const response = yield call(storekeeperService.fetchDestoryOrderMapUnit, { orderId })
+      // 过滤数据并存储
+      const destoryUnits: ToolUnitDestoryType[] = response.map((unit: any) => ({
+        id: unit.id,
+        toolId: unit.toolId,
+        code: unit.code,
+        location: unit.location,
+        remark: unit.remark,
+        createTime: unit.createTime,
+      }))
+      yield put({ type: 'changeDestoryOrderMapUnit', payload: { orderId, destoryUnits } })
+    },
+    *fetchDestoryOrder(_, { call, put }) {
+      const response = yield call(storekeeperService.fetchDestoryOrder)
+      // 过滤数据存储
+      const orders: DestoryOrderType[] = response.map((order: any) => ({
+        id: order.id,
+        name: order.name,
+        createTime: order.createTime,
+        remark: order.remark,
+      }))
+      // 存储
+      yield put({ type: 'changeDestoryOrder', payload: orders })
     },
     *fetchRepairOrder(_, { call, put }) {
       const response = yield call(storekeeperService.fetchRepairOrder)
@@ -494,6 +685,16 @@ const StorekeeperModel: IStorekeeperModelType = {
         yield put({ type: 'changeRepairOrderMapUnit', payload: { orderId, repairUnits } })
       }
     },
+    *fetchToolCodeSearch({ payload: search }, { call, put }) {
+      const response = yield call(storekeeperService.fetchToolCode, { search })
+      // 过滤数据存储
+      const toolCodes: ToolCodeSearchType[] = response.map((tool: any) => ({
+        id: tool.id,
+        code: tool.code,
+      }))
+      // 存储
+      yield put({ type: 'changeToolCodeSearch', payload: toolCodes })
+    },
     *fetchToolInfoUnit(_, { call, put, select }) {
       const toolInfoId = yield select(
         (state: IConnectState) => state.storekeeper.toolInfoId,
@@ -520,6 +721,32 @@ const StorekeeperModel: IStorekeeperModelType = {
 
       // 存储数据
       yield put({ type: 'changeToolInfoUnits', payload: units })
+    },
+    *initDestoryOrder(_, { put, select }) {
+      const orders = yield select(
+        (state: IConnectState) => state.storekeeper.destoryOrders,
+      )
+      // 当前报单数为0，则去拉取一次
+      if (orders.length === 0) {
+        yield put({ type: 'fetchDestoryOrder' })
+      }
+    },
+    *initDestoryInfo(_, { put, select }) {
+      // destoryInfo页面，强绑定了数据destoryOrderInfoId,没有则退出
+      const destoryOrderInfoId = yield select(
+        (state: IConnectState) => state.storekeeper.destoryOrderInfoId,
+      )
+      if (isNil(destoryOrderInfoId)) {
+        router.replace('/storekeeper/destory')
+      }
+
+      // 获取destoryOrderMapUnit
+      const destoryUnits = yield select(
+        (state: IConnectState) => state.storekeeper.destoryOrderMapUnit[destoryOrderInfoId] || [],
+      )
+      if (destoryUnits.length === 0) {
+        yield put({ type: 'fetchDestoryOrderMapUnit', payload: destoryOrderInfoId })
+      }
     },
     *initRepairOrder(_, { put, select }) {
       const orders = yield select(
@@ -631,7 +858,23 @@ const StorekeeperModel: IStorekeeperModelType = {
       // 更改查询条件
       yield put({ type: 'changeToolAdvancedSearchLimit', payload: { page: nextPage, size } })
     },
-    *submitRepairOrder({ payload: orderId }, { call, put }) {
+    *submitDestoryOrder({ payload: orderId }, { call, put }) {
+      const result: OperationResultType = yield call(storekeeperService.submitDestoryOrder, { orderId })
+      if (result.success === false) {
+        yield put({ type: 'global/changeDialog', payload: { type: 'warning', msg: result.msg } })
+        return
+      }
+      // 删除表单
+      yield put({ type: 'changeDestoryOrderInfoId', payload: null })
+      // order
+      yield put({ type: 'fetchDestoryOrder' })
+      // 回退页面
+      router.replace('/storekeeper/destory')
+    },
+    *submitRepairOrder(_, { call, put, select }) {
+      const orderId = yield select(
+        (state: IConnectState) => state.storekeeper.destoryOrderInfoId,
+      )
       const result: OperationResultType = yield call(storekeeperService.submitOrder, { orderId })
       if (result.success === false) {
         yield put({ type: 'global/changeDialog', payload: { type: 'warning', msg: result.msg } })
@@ -664,6 +907,23 @@ const StorekeeperModel: IStorekeeperModelType = {
       // 重新拉取未关联的报修项
       yield put({ type: 'fetchRepairOrderMapUnit', payload: null })
     },
+    *removeDestoryFromOrder({ payload: id }, { call, put, select }) {
+      // 0.获取当前的orderInfoId
+      const orderInfoId = yield select(
+        (state: IConnectState) => state.storekeeper.destoryOrderInfoId as string,
+      )
+      // 1.移除维修项
+      /* eslint-disable-next-line max-len */
+      const result: OperationResultType = yield call(storekeeperService.removeDestoryFromOrder, { destoryUnitId: id, orderInfoId })
+      if (result.success === false) {
+        yield put({ type: 'global/changeDialog', payload: { type: 'warning', msg: result.msg } })
+        return
+      }
+      // 2.清空报修项
+      yield put({ type: 'clearDestoryOrderMapUnit' })
+      // 3.重新拉取该destoryUnit
+      yield put({ type: 'fetchDestoryOrderMapUnit', payload: orderInfoId })
+    },
     *removeRepairFromOrder({ payload: id }, { call, put, select }) {
       // 0.获取当前的orderInfoId
       const orderInfoId = yield select(
@@ -682,6 +942,19 @@ const StorekeeperModel: IStorekeeperModelType = {
       yield put({ type: 'fetchRepairOrderMapUnit', payload: orderInfoId })
       // 4.重新拉取未关联的报修项
       yield put({ type: 'fetchRepairOrderMapUnit', payload: null })
+    },
+    *removeDestoryOrder({ payload: id }, { call, put }) {
+      /* eslint-disable-next-line max-len */
+      const result: OperationResultType = yield call(storekeeperService.removeDestoryOrder, { id })
+      // 删除失败
+      if (result.success === false) {
+        yield put({ type: 'global/changeDialog', payload: { type: 'warning', msg: result.msg } })
+        return
+      }
+      // 关闭modal
+      yield put({ type: 'clearEditDestoryOrder' })
+      // 重新获取destoryOrder
+      yield put({ type: 'fetchDestoryOrder' })
     },
     *removeProductionline({ payload: id }, { call, put }) {
       /* eslint-disable-next-line max-len */
@@ -721,6 +994,44 @@ const StorekeeperModel: IStorekeeperModelType = {
       yield put({ type: 'clearEditToolUnit' })
       // 重新获取toolUnit
       yield put({ type: 'fetchToolInfoUnit' })
+    },
+    *updateDestoryOrder({ payload: editDestoryOrder }, { call, put, select }) {
+      const id = yield select(
+        (state: IConnectState) => (state.storekeeper.editDestoryOrder as EditDestoryOrderType).id,
+      )
+      const result: OperationResultType = yield call(storekeeperService.updateDestoryOrder, { ...editDestoryOrder, id })
+      // 更新失败
+      if (result.success === false) {
+        yield put({ type: 'global/changeDialog', payload: { type: 'warning', msg: result.msg } })
+        return
+      }
+      // 关闭modal
+      yield put({ type: 'clearEditDestoryOrder' })
+      // 刷新当前页
+      yield put({ type: 'fetchDestoryOrder' })
+    },
+    *updateDestoryUnit({ payload: editDestoryUnit }, { call, put, select }) {
+      const id = yield select(
+        /* eslint-disable-next-line max-len */
+        (state: IConnectState) => (state.storekeeper.editDestoryUnit as EditDestoryUnitType).id,
+      )
+      const orderId = yield select(
+        (state: IConnectState) => state.storekeeper.destoryOrderInfoId as string,
+      )
+      const result: OperationResultType = yield call(storekeeperService.updateDestoryUnit, {
+        ...editDestoryUnit,
+        id,
+        orderId,
+      })
+      // 更新失败
+      if (result.success === false) {
+        yield put({ type: 'global/changeDialog', payload: { type: 'warning', msg: result.msg } })
+        return
+      }
+      // 关闭modal
+      yield put({ type: 'clearEditDestoryUnit' })
+      // 重新获取toolUnit
+      yield put({ type: 'fetchDestoryOrderMapUnit', payload: orderId })
     },
     *updateEditProductionline({ payload: editProductionline }, { call, put, select }) {
       const id = yield select(
@@ -780,13 +1091,19 @@ const StorekeeperModel: IStorekeeperModelType = {
     },
   },
   subscriptions: {
-    initToolInfo({ dispatch, history }) {
+    initDestoryOrder({ dispatch, history }) {
       return history.listen(({ pathname }) => {
-        if (pathname === '/storekeeper/toolInfo') {
-          // toolinfo页面, 强绑定了数据toolInfoId，如果没有则退出
-          dispatch({ type: 'checkToolInfoId' })
-          // 获取夹具实体信息
-          dispatch({ type: 'fetchToolInfoUnit' })
+        if (pathname === '/storekeeper/destory') {
+          // 初始化destoryOrder
+          dispatch({ type: 'initDestoryOrder' })
+        }
+      })
+    },
+    intiDestoryOrderInfo({ dispatch, history }) {
+      return history.listen(({ pathname }) => {
+        if (pathname === '/storekeeper/destoryInfo') {
+          // 初始化destoryInfo
+          dispatch({ type: 'initDestoryInfo' })
         }
       })
     },
@@ -797,6 +1114,16 @@ const StorekeeperModel: IStorekeeperModelType = {
           dispatch({ type: 'initRepairOrder' })
           // 初始化未关联保修单的报修项
           dispatch({ type: 'fetchRepairOrderMapUnit', payload: null })
+        }
+      })
+    },
+    initToolInfo({ dispatch, history }) {
+      return history.listen(({ pathname }) => {
+        if (pathname === '/storekeeper/toolInfo') {
+          // toolinfo页面, 强绑定了数据toolInfoId，如果没有则退出
+          dispatch({ type: 'checkToolInfoId' })
+          // 获取夹具实体信息
+          dispatch({ type: 'fetchToolInfoUnit' })
         }
       })
     },
