@@ -1,5 +1,8 @@
-# Antd-ts Seed
+# Antd-ts Demo
 
+企业工具管理平台的Antd-ts的案例*不在维护*
+
+[https://tms-demo.zhn68033.now.sh/](https://tms-demo.zhn68033.now.sh/)
 
 ## install
 
