@@ -45,12 +45,13 @@ const Login: React.FC<LoginProps> = props => {
         <div className={styles.top}>
           <div className={styles.header}>
             {/* <img alt="logo" className={styles.logo} /> */}
-            <span className={styles.title}>捷普·TMS</span>
+            <span className={styles.title}>TMS</span>
           </div>
           <div className={styles.desc}>
             <p>随便填写账号密码,已完成以下路由</p>
             <p>/admin</p>
             <p>/worker</p>
+            <p>/storekeeper</p>
           </div>
         </div>
         <FormComponent

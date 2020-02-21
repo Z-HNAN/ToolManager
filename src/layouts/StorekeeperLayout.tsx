@@ -46,7 +46,7 @@ const StorekeeperLayout: React.FC<StorekeeperLayoutProps> = props => {
       <Menu.Item key="tool">
         <span><Icon type="user" />工夹具管理</span>
       </Menu.Item>
-      <Menu.Item disabled key="purchase">
+      <Menu.Item key="purchase">
         <span><Icon type="user" />提交采购</span>
       </Menu.Item>
       <Menu.Item key="repair">

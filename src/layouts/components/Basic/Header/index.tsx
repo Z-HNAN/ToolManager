@@ -75,7 +75,7 @@ const HeaderComponent: React.FC<PropsType> = props => {
   return (
     <Header className={styles.header}>
       <div className={styles.logo} />
-      <span className={styles.title}>工夹具全寿命智能管理系统</span>
+      <span className={styles.title}>工具全寿命智能管理平台</span>
       <div className={styles.user}>
         <Avatar className={styles.userAvatar} style={{ backgroundColor: userAvatarColor, verticalAlign: 'middle' }} size="large">
           {userName}
